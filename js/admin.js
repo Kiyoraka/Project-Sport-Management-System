@@ -392,6 +392,11 @@
   function init() {
     $('loginSubmit').onclick = submitLogin;
     $('loginPass').addEventListener('keydown', function (e) { if (e.key === 'Enter') { submitLogin(); } });
+    $('demoFill').onclick = function () {
+      $('loginEmail').value = 'admin@gmail.com';
+      $('loginPass').value = 'admin123';
+      $('loginErr').hidden = true;
+    };
     $('logoutBtn').onclick = logout;
     $('addCourt').onclick = addCourt;
     $('autoConfirmBtn').onclick = toggleAutoConfirm;
