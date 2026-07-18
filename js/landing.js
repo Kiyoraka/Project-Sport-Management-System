@@ -443,6 +443,16 @@
       it.onclick = function () { switchTab(it.getAttribute('data-tab')); };
     });
 
+    var contactSend = $('contactSend');
+    if (contactSend) {
+      contactSend.onclick = function () {
+        toast('Message sent');
+        $('ctName').value = '';
+        $('ctEmail').value = '';
+        $('ctMsg').value = '';
+      };
+    }
+
     // expose helpers the booking flow needs
     window.ArenaLanding = {
       state: state, money: money, selectedArray: selectedArray, selTotal: selTotal,

@@ -194,6 +194,19 @@ html { scroll-behavior: smooth; }
   font-weight: 600;
 }
 
+/* ---------- contact ---------- */
+.contact { flex: none; }
+.contact .wrap { padding: 32px 20px 44px; }
+.contact h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 18px; }
+.contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; align-items: start; }
+.contact-info, .contact-form { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px; }
+.ci-name { font-size: 16px; font-weight: 800; margin-bottom: 12px; }
+.ci-row { font-size: 13.5px; font-weight: 600; color: var(--muted); padding: 6px 0; }
+.contact-form { display: flex; flex-direction: column; }
+.contact-form .label { margin-top: 12px; }
+.contact-form .label:first-child { margin-top: 0; }
+.contact-form .btn { margin-top: 16px; align-self: flex-start; }
+
 /* ---------- footer ---------- */
 .site-footer { background: var(--navy); color: var(--white); }
 .footer-inner { padding: 28px 20px; display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-between; align-items: center; }
@@ -320,10 +333,11 @@ html { scroll-behavior: smooth; }
   .stat-card { flex: 1; min-width: 0; padding: 12px 14px; }
 
   .my-bookings { display: none; }
-  body.show-mine .hero, body.show-mine .timetable, body.show-mine .site-footer { display: none; }
+  body.show-mine .hero, body.show-mine .timetable, body.show-mine .gallery, body.show-mine .contact, body.show-mine .site-footer { display: none; }
   body.show-mine .my-bookings { display: block; }
 
   .form-grid { grid-template-columns: 1fr; }
   .card-grid { grid-template-columns: 1fr 1fr; }
   .gallery-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; }
 }
