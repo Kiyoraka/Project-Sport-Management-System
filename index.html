@@ -11,8 +11,175 @@
   <link rel="stylesheet" href="css/landing.css">
 </head>
 <body>
-  <!-- Landing markup built in Phase 2 -->
-  <script src="js/data.js"></script>
-  <script src="js/landing.js"></script>
+
+<div class="page" id="tab-book">
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <div class="brand">
+        <div class="logo-mark" style="width:34px;height:34px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a14 14 0 0 1 0 18M3.5 9h17M3.5 15h17"></path></svg>
+        </div>
+        <div class="brand-name" id="venueName">ArenaOne</div>
+      </div>
+      <nav class="desk-nav">
+        <a href="#timetable" class="nav-on">Timetable</a>
+        <a href="#timetable">Pricing</a>
+        <a href="#foot">Contact</a>
+      </nav>
+      <a class="btn btn-navy" href="admin.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="9.5" cy="7" r="4"></circle><path d="M17 8l2 2 4-4" transform="translate(-2 2)"></path></svg>
+        Admin
+      </a>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <div class="hero-badge"><span class="dot"></span> Open today · 08:00 – 22:00</div>
+        <h1>Book your court.<br>Play in minutes.</h1>
+        <p>Badminton, futsal, basketball and more — pick a date, tap a free slot and you're in. 2-hour sessions, pay online or at the counter.</p>
+      </div>
+      <div class="hero-stats" id="heroStats"><!-- filled by landing.js --></div>
+    </div>
+  </section>
+
+  <!-- ============ TIMETABLE ============ -->
+  <section id="timetable" class="timetable">
+    <div class="wrap">
+      <div class="tt-head">
+        <h2>Court timetable</h2>
+        <div class="tt-date" id="dateLabel"></div>
+      </div>
+
+      <div class="chips-row" id="dayChips"><!-- day chips by landing.js --></div>
+
+      <div class="filters">
+        <div class="chips-row wrap-chips" id="sportChips"><!-- sport chips by landing.js --></div>
+        <select class="select court-filter" id="courtFilter">
+          <option value="all">All courts</option>
+        </select>
+      </div>
+
+      <div class="legend">
+        <div class="lg"><span class="sw sw-avail"></span>Available</div>
+        <div class="lg"><span class="sw sw-sel"></span>Selected</div>
+        <div class="lg"><span class="sw sw-booked"></span>Booked</div>
+        <div class="lg"><span class="sw sw-maint"></span>Maintenance</div>
+        <div class="lg"><span class="sw sw-yours"></span>Yours</div>
+      </div>
+
+      <div class="grid-card">
+        <div class="grid-scroll" id="grid"><!-- timetable grid by landing.js --></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MY BOOKINGS (mobile tab) ============ -->
+  <section class="my-bookings" id="tab-mine">
+    <div class="wrap narrow">
+      <h2>My bookings</h2>
+      <div id="myBookings"><!-- filled by landing.js --></div>
+      <div class="empty" id="myBookingsEmpty" hidden>No bookings yet — pick a slot in the Book tab.</div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer id="foot" class="site-footer">
+    <div class="wrap footer-inner">
+      <div>
+        <div class="foot-name" id="footName">ArenaOne</div>
+        <div class="foot-addr">12 Jalan Stadium, 46200 Petaling Jaya · 03-7784 2200 · hello@arenaone.my</div>
+      </div>
+      <div class="foot-hours">Daily 08:00 – 22:00 · 2-hour sessions</div>
+    </div>
+  </footer>
+</div>
+
+<!-- ============ SELECTION BAR ============ -->
+<div class="sel-bar" id="selBar" hidden>
+  <div class="sel-summary" id="selSummary">0 slots · RM0</div>
+  <div class="sel-actions">
+    <button class="btn sel-clear" id="selClear">Clear</button>
+    <button class="btn sel-book" id="selBook">Book now</button>
+  </div>
+</div>
+
+<!-- ============ MOBILE BOTTOM NAV ============ -->
+<nav class="bottom-nav" id="landNav">
+  <button class="nav-item active" data-tab="book">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+    <span>Book</span>
+  </button>
+  <button class="nav-item" data-tab="mine">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 6v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-6z"></path></svg>
+    <span>My bookings</span>
+  </button>
+</nav>
+
+<!-- ============ BOOKING MODAL ============ -->
+<div class="modal-overlay sheet" id="bookingModal" hidden>
+  <div class="modal bottom-sheet" id="bookingSheet">
+    <div class="sheet-head">
+      <div class="steps">
+        <span class="step-dot" data-step="1"></span>
+        <span class="step-dot" data-step="2"></span>
+        <span class="step-dot" data-step="3"></span>
+        <span class="step-label" id="stepLabel">Your details</span>
+      </div>
+      <button class="modal-close" id="bookingClose">✕</button>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="book-step" id="bookStep1">
+      <h3>Your details</h3>
+      <p class="sub" id="step1Sub"></p>
+      <div class="sel-chips" id="selectedList"></div>
+      <div class="form-grid">
+        <div class="field span2"><label class="label">FULL NAME *</label><input class="input" id="fName" placeholder="Aina Rahman"></div>
+        <div class="field"><label class="label">PHONE *</label><input class="input" id="fPhone" placeholder="012-345 6789"></div>
+        <div class="field"><label class="label">PLAYERS</label><input class="input" id="fPlayers" type="number" min="1" max="22" value="2"></div>
+        <div class="field span2"><label class="label">EMAIL</label><input class="input" id="fEmail" placeholder="you@email.com"></div>
+        <div class="field span2"><label class="label">NOTES</label><textarea class="textarea" id="fNotes" rows="2" placeholder="Racket rental, coaching…"></textarea></div>
+      </div>
+      <div class="form-err" id="formErr" hidden></div>
+      <button class="btn btn-primary btn-block btn-lg" id="toPay">Continue to payment · <span id="selTotal1">RM0</span></button>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="book-step" id="bookStep2" hidden>
+      <h3>Payment</h3>
+      <p class="sub">Total <b id="selTotal2">RM0</b> — choose a method</p>
+      <div class="pay-methods" id="payMethods"></div>
+      <div class="pay-detail" id="payDetail"></div>
+      <div class="row-gap">
+        <button class="btn btn-ghost btn-back" id="payBack">Back</button>
+        <button class="btn btn-primary btn-block btn-lg" id="payDo">Pay <span id="selTotal3">RM0</span></button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="book-step" id="bookStep3" hidden>
+      <div class="confirm">
+        <div class="confirm-tick">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+        </div>
+        <h3 id="confirmTitle">Booking confirmed!</h3>
+        <p class="sub">Ref <b id="lastRef"></b> · <span id="confirmDate"></span></p>
+        <div class="confirm-lines" id="lastBooked"></div>
+        <button class="btn btn-navy btn-block btn-lg" id="bookingDone">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div id="toastHost"></div>
+
+<script src="js/data.js"></script>
+<script src="js/landing.js"></script>
 </body>
 </html>
