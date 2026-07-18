@@ -373,7 +373,6 @@
       { label: 'Sport management', tab: 'sports' },
       { label: 'Settings', tab: 'settings' },
       { label: 'Help', tab: 'help' },
-      { label: 'View site', href: 'index.html' },
       { label: 'Log out', action: 'logout' }
     ];
     var host = $('moreList');
