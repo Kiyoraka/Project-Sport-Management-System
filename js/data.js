@@ -41,6 +41,7 @@
     courts:   'arenaone.courts',
     bookings: 'arenaone.bookings',
     settings: 'arenaone.settings',
+    gallery:  'arenaone.gallery',
     seq:      'arenaone.seq'
   };
 
@@ -63,12 +64,19 @@
 
   function seedCourts() {
     return [
-      { id: 'c1', label: 'Court 1', sport: 'Badminton',  price: 40, status: 'active' },
-      { id: 'c2', label: 'Court 2', sport: 'Badminton',  price: 40, status: 'active' },
-      { id: 'c3', label: 'Court 3', sport: 'Futsal',     price: 80, status: 'active' },
-      { id: 'c4', label: 'Court 4', sport: 'Basketball', price: 60, status: 'active' },
-      { id: 'c5', label: 'Court 5', sport: 'Pickleball', price: 45, status: 'maintenance' }
+      { id: 'c1', label: 'Court 1', sport: 'Badminton',  price: 40, status: 'active',      image: 'assets/courts/court-1.png' },
+      { id: 'c2', label: 'Court 2', sport: 'Badminton',  price: 40, status: 'active',      image: 'assets/courts/court-2.png' },
+      { id: 'c3', label: 'Court 3', sport: 'Futsal',     price: 80, status: 'active',      image: 'assets/courts/court-3.png' },
+      { id: 'c4', label: 'Court 4', sport: 'Basketball', price: 60, status: 'active',      image: 'assets/courts/court-4.png' },
+      { id: 'c5', label: 'Court 5', sport: 'Pickleball', price: 45, status: 'maintenance', image: 'assets/courts/court-5.png' }
     ];
+  }
+
+  // Gallery seeded from the court photos; admin can add/delete more.
+  function seedGallery() {
+    return seedCourts().map(function (c, i) {
+      return { id: 'g' + (i + 1), src: c.image, caption: c.label + ' · ' + c.sport };
+    });
   }
 
   function seedSettings() {
@@ -131,6 +139,7 @@
       if (!global.localStorage.getItem(KEYS.courts))   { write(KEYS.courts, seedCourts()); }
       if (!global.localStorage.getItem(KEYS.bookings)) { write(KEYS.bookings, seedBookings()); }
       if (!global.localStorage.getItem(KEYS.settings)) { write(KEYS.settings, seedSettings()); }
+      if (!global.localStorage.getItem(KEYS.gallery))  { write(KEYS.gallery, seedGallery()); }
       if (!global.localStorage.getItem(KEYS.seq))      { write(KEYS.seq, 2043); }
       return this;
     },
@@ -139,6 +148,7 @@
       write(KEYS.courts, seedCourts());
       write(KEYS.bookings, seedBookings());
       write(KEYS.settings, seedSettings());
+      write(KEYS.gallery, seedGallery());
       write(KEYS.seq, 2043);
       return this;
     },
@@ -199,6 +209,26 @@
 
     removeCourt: function (id) {
       this.setCourts(this.getCourts().filter(function (c) { return c.id !== id; }));
+    },
+
+    /* ---- gallery ---- */
+    getGallery: function () { return read(KEYS.gallery, []); },
+    setGallery: function (list) { write(KEYS.gallery, list); },
+
+    nextGalleryId: function () {
+      var ids = this.getGallery().map(function (g) { return parseInt(String(g.id).replace(/\D/g, ''), 10) || 0; });
+      var max = ids.length ? Math.max.apply(null, ids) : 0;
+      return 'g' + (max + 1);
+    },
+
+    addGalleryImage: function (img) {
+      var list = this.getGallery();
+      list.push({ id: this.nextGalleryId(), src: img.src, caption: img.caption || '' });
+      this.setGallery(list);
+    },
+
+    removeGalleryImage: function (id) {
+      this.setGallery(this.getGallery().filter(function (g) { return g.id !== id; }));
     },
 
     /* ---- derived helpers ---- */
