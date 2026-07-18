@@ -46,6 +46,21 @@
     });
   }
 
+  /* ---------- gallery ---------- */
+  function renderGallery() {
+    var host = $('galleryGrid');
+    if (!host) { return; }
+    host.innerHTML = '';
+    S.getGallery().forEach(function (g) {
+      var card = el('div', 'gallery-card');
+      var img = el('img'); img.src = g.src; img.alt = g.caption || 'Court'; img.loading = 'lazy';
+      var cap = el('div', 'gc-cap'); cap.textContent = g.caption || '';
+      card.appendChild(img);
+      card.appendChild(cap);
+      host.appendChild(card);
+    });
+  }
+
   /* ---------- day chips ---------- */
   function renderDayChips() {
     var host = $('dayChips');
@@ -418,6 +433,7 @@
     $('venueName').textContent = S.getSettings().venueName;
     $('footName').textContent = S.getSettings().venueName;
     renderHeroStats();
+    renderGallery();
     renderAll();
 
     $('selClear').onclick = clearSel;

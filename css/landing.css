@@ -152,6 +152,17 @@
 .slot-maint { background: var(--cream); color: #9A7B12; cursor: not-allowed; border-color: var(--gold); }
 .slot-yours { background: var(--white); border-color: var(--navy); color: var(--navy); }
 
+/* ---------- gallery ---------- */
+.gallery .wrap { padding: 8px 20px 40px; }
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.gallery-card { border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border); background: var(--white); }
+.gallery-card img { width: 100%; height: 200px; object-fit: cover; display: block; background: var(--bg); }
+.gallery-card .gc-cap { padding: 12px 14px; font-size: 13.5px; font-weight: 800; color: var(--navy); }
+
+/* smooth in-page nav with sticky-header offset */
+html { scroll-behavior: smooth; }
+#timetable, #gallery, #contact { scroll-margin-top: 76px; }
+
 /* ---------- my bookings ---------- */
 .my-bookings { display: none; }
 .my-bookings .wrap.narrow { max-width: 640px; padding: 24px 20px 40px; }
@@ -314,4 +325,5 @@
 
   .form-grid { grid-template-columns: 1fr; }
   .card-grid { grid-template-columns: 1fr 1fr; }
+  .gallery-grid { grid-template-columns: 1fr; }
 }
