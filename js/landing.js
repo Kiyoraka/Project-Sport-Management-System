@@ -259,11 +259,159 @@
     renderSelBar();
   }
 
-  /* ---------- booking modal (implemented in Phase 2 Task 4) ---------- */
-  var Booking = window.ArenaBooking = {
-    open: function () {},
-    close: function () {}
+  /* ---------- booking modal ---------- */
+  var PAY = A.PAY_METHODS;
+
+  function dateLabelText() { return D.fmtLong(new Date(state.dayISO + 'T00:00:00')); }
+
+  function showStep(n) {
+    $('bookStep1').hidden = n !== 1;
+    $('bookStep2').hidden = n !== 2;
+    $('bookStep3').hidden = n !== 3;
+    document.querySelectorAll('.step-dot').forEach(function (d) {
+      d.classList.toggle('on', parseInt(d.getAttribute('data-step'), 10) <= n);
+    });
+    $('stepLabel').textContent = n === 1 ? 'Your details' : (n === 2 ? 'Payment' : 'Confirmed');
+  }
+
+  var Booking = {
+    payMethod: 'card',
+
+    open: function () {
+      var arr = selectedArray();
+      if (!arr.length) { return; }
+      var total = money(selTotal());
+
+      // step 1 content
+      $('step1Sub').textContent = arr.length + (arr.length === 1 ? ' slot' : ' slots') + ' · ' + dateLabelText();
+      var chips = $('selectedList'); chips.innerHTML = '';
+      arr.forEach(function (s) {
+        var c = el('span', 'sc'); c.textContent = s.courtLabel + ' · ' + s.slotLabel;
+        chips.appendChild(c);
+      });
+      $('selTotal1').textContent = total;
+      $('formErr').hidden = true;
+
+      showStep(1);
+      $('bookingModal').hidden = false;
+
+      // wire (idempotent)
+      $('bookingClose').onclick = Booking.close;
+      $('toPay').onclick = Booking.toPay;
+      $('payBack').onclick = function () { showStep(1); };
+      $('payDo').onclick = Booking.pay;
+      $('bookingDone').onclick = Booking.close;
+      $('bookingModal').onclick = function (e) { if (e.target === $('bookingModal')) { Booking.close(); } };
+    },
+
+    close: function () { $('bookingModal').hidden = true; },
+
+    toPay: function () {
+      var name = $('fName').value.trim();
+      var phone = $('fPhone').value.trim();
+      if (!name || !phone) {
+        var err = $('formErr');
+        err.textContent = 'Please enter your name and phone number.';
+        err.hidden = false;
+        return;
+      }
+      $('formErr').hidden = true;
+      Booking.renderPay();
+      showStep(2);
+    },
+
+    renderPay: function () {
+      $('selTotal2').textContent = money(selTotal());
+      $('selTotal3').textContent = money(selTotal());
+      var host = $('payMethods'); host.innerHTML = '';
+      PAY.forEach(function (p) {
+        var btn = el('button', 'pay-method' + (Booking.payMethod === p.id ? ' on' : ''));
+        btn.innerHTML = '<span class="pdot"></span>' +
+          '<span><span class="pname">' + p.name + '</span><span class="pdesc">' + p.desc + '</span></span>';
+        btn.onclick = function () { Booking.payMethod = p.id; Booking.renderPay(); };
+        host.appendChild(btn);
+      });
+      Booking.renderPayDetail();
+    },
+
+    renderPayDetail: function () {
+      var host = $('payDetail');
+      var m = Booking.payMethod;
+      if (m === 'card') {
+        host.innerHTML =
+          '<div class="card-grid">' +
+            '<input class="input span-all" placeholder="Card number">' +
+            '<input class="input" placeholder="MM / YY">' +
+            '<input class="input" placeholder="CVC">' +
+            '<input class="input span-all" placeholder="Name on card">' +
+          '</div>';
+      } else if (m === 'fpx') {
+        host.innerHTML =
+          '<select class="select"><option>Maybank2u</option><option>CIMB Clicks</option>' +
+          '<option>Public Bank</option><option>RHB Now</option><option>Bank Islam</option>' +
+          '<option>HLB Connect</option></select>';
+      } else if (m === 'wallet') {
+        host.innerHTML =
+          '<div class="qr-box"><div class="qr-code">QR CODE</div>' +
+          '<div class="qr-note">Scan with Touch \'n Go eWallet to pay ' + money(selTotal()) + '</div></div>';
+      } else {
+        host.innerHTML =
+          '<div class="venue-note">Your slot is held as <b>Pending</b>. Pay at the counter 15 minutes before your session to confirm.</div>';
+      }
+    },
+
+    pay: function () {
+      var arr = selectedArray();
+      var settings = S.getSettings();
+      var autoOk = settings.autoConfirm && Booking.payMethod !== 'venue';
+      var status = autoOk ? 'confirmed' : 'pending';
+      var customer = {
+        customer: $('fName').value.trim(),
+        phone: $('fPhone').value.trim(),
+        email: $('fEmail').value.trim(),
+        players: parseInt($('fPlayers').value, 10) || 1,
+        notes: $('fNotes').value.trim()
+      };
+
+      var lines = [], firstRef = null;
+      arr.forEach(function (s) {
+        var ref = S.nextRef();
+        if (!firstRef) { firstRef = ref; }
+        S.addBooking({
+          ref: ref, customer: customer.customer, phone: customer.phone, email: customer.email,
+          players: customer.players, notes: customer.notes,
+          courtId: s.courtId, day: state.dayISO, slot: s.slotId,
+          amount: s.price, pay: Booking.payMethod, status: status,
+          createdAt: state.dayISO
+        });
+        addMine(ref);
+        lines.push({ label: s.courtLabel + ' · ' + s.slotLabel, price: money(s.price) });
+      });
+
+      // confirmation content
+      $('confirmTitle').textContent = status === 'confirmed' ? 'Booking confirmed!' : 'Booking received';
+      $('lastRef').textContent = firstRef;
+      $('confirmDate').textContent = dateLabelText();
+      var host = $('lastBooked'); host.innerHTML = '';
+      lines.forEach(function (l) {
+        var row = el('div', 'cl');
+        row.innerHTML = '<span>' + l.label + '</span><span class="price">' + l.price + '</span>';
+        host.appendChild(row);
+      });
+      var totalRow = el('div', 'cl total');
+      totalRow.innerHTML = '<span>Total</span><span>' + money(selTotal()) + '</span>';
+      host.appendChild(totalRow);
+
+      // finalize: clear selection, lock grid, refresh
+      state.selected = {};
+      renderGrid();
+      renderSelBar();
+      renderMyBookings();
+      toast(status === 'confirmed' ? 'Booking confirmed' : 'Booking received');
+      showStep(3);
+    }
   };
+  window.ArenaBooking = Booking;
 
   /* ---------- init ---------- */
   function init() {
