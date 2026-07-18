@@ -69,7 +69,7 @@
   }
 
   /* ---------- tab router ---------- */
-  var TITLES = { main: 'Dashboard', analysis: 'Analysis', sports: 'Sport management', booking: 'Bookings', settings: 'Settings', help: 'Help', more: 'More' };
+  var TITLES = { main: 'Dashboard', analysis: 'Analysis', sports: 'Sport management', booking: 'Bookings', settings: 'Settings', help: 'Help', more: 'Account' };
   var SECTIONS = { main: 'tabMain', analysis: 'tabAnalysis', sports: 'tabSports', booking: 'tabBooking', settings: 'tabSettings', help: 'tabHelp', more: 'tabMore' };
 
   function setTab(tab) {
@@ -370,7 +370,6 @@
   /* ---------- MORE (mobile) ---------- */
   function renderMore() {
     var items = [
-      { label: 'Sport management', tab: 'sports' },
       { label: 'Settings', tab: 'settings' },
       { label: 'Help', tab: 'help' },
       { label: 'Log out', action: 'logout' }
