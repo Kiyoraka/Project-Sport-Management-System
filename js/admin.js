@@ -69,8 +69,8 @@
   }
 
   /* ---------- tab router ---------- */
-  var TITLES = { main: 'Dashboard', analysis: 'Analysis', sports: 'Sport management', booking: 'Bookings', settings: 'Settings', help: 'Help', more: 'Account' };
-  var SECTIONS = { main: 'tabMain', analysis: 'tabAnalysis', sports: 'tabSports', booking: 'tabBooking', settings: 'tabSettings', help: 'tabHelp', more: 'tabMore' };
+  var TITLES = { main: 'Dashboard', analysis: 'Analysis', sports: 'Sport management', booking: 'Bookings', gallery: 'Gallery', settings: 'Settings', help: 'Help', more: 'Account' };
+  var SECTIONS = { main: 'tabMain', analysis: 'tabAnalysis', sports: 'tabSports', booking: 'tabBooking', gallery: 'tabGallery', settings: 'tabSettings', help: 'tabHelp', more: 'tabMore' };
 
   function setTab(tab) {
     state.tab = tab;
@@ -87,6 +87,7 @@
     else if (tab === 'analysis') { renderAnalysis(); }
     else if (tab === 'sports') { renderSports(); }
     else if (tab === 'booking') { renderBookings(); }
+    else if (tab === 'gallery') { renderGalleryAdmin(); }
     else if (tab === 'settings') { renderSettings(); }
     else if (tab === 'help') { renderHelp(); }
     else if (tab === 'more') { renderMore(); }
@@ -311,6 +312,45 @@
     return map[id] || id;
   }
 
+  /* ---------- GALLERY ---------- */
+  function renderGalleryAdmin() {
+    var list = S.getGallery();
+    $('galleryCount').textContent = list.length;
+    var host = $('galleryList');
+    host.innerHTML = '';
+    if (!list.length) {
+      host.innerHTML = '<div class="empty-sm">No images yet — add one above.</div>';
+      return;
+    }
+    list.forEach(function (g) {
+      var card = el('div', 'gl-card');
+      var img = el('img'); img.src = g.src; img.alt = g.caption || '';
+      var cap = el('div', 'gl-cap'); cap.textContent = g.caption || ' ';
+      var act = el('div', 'gl-actions');
+      var del = el('button', 'btn-xs btn-cancel'); del.textContent = 'Delete';
+      del.onclick = function () { S.removeGalleryImage(g.id); toast('Image removed'); renderGalleryAdmin(); };
+      act.appendChild(del);
+      card.appendChild(img); card.appendChild(cap); card.appendChild(act);
+      host.appendChild(card);
+    });
+  }
+
+  function addGalleryImage() {
+    var input = $('glFile');
+    var file = input.files && input.files[0];
+    var caption = $('glCaption').value.trim();
+    if (!file) { toast('Choose an image first'); return; }
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      S.addGalleryImage({ src: e.target.result, caption: caption });
+      input.value = '';
+      $('glCaption').value = '';
+      toast('Image added');
+      renderGalleryAdmin();
+    };
+    reader.readAsDataURL(file);
+  }
+
   /* ---------- SETTINGS ---------- */
   function renderSettings() {
     var s = S.getSettings();
@@ -370,6 +410,7 @@
   /* ---------- MORE (mobile) ---------- */
   function renderMore() {
     var items = [
+      { label: 'Gallery', tab: 'gallery' },
       { label: 'Settings', tab: 'settings' },
       { label: 'Help', tab: 'help' },
       { label: 'Log out', action: 'logout' }
@@ -402,6 +443,7 @@
     $('autoConfirmBtn').onclick = toggleAutoConfirm;
     $('saveSettings').onclick = saveSettings;
     $('resetData').onclick = resetData;
+    $('glAdd').onclick = addGalleryImage;
     $('gotoBookings').onclick = function () { setTab('booking'); };
 
     document.querySelectorAll('#sideNav .side-item').forEach(function (b) {

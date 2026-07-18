@@ -125,6 +125,15 @@
 .chip-sm { border: 1px solid var(--border); background: var(--white); color: var(--muted); border-radius: var(--r-pill); padding: 7px 12px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Archivo', sans-serif; }
 .chip-sm.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
 
+/* ---------- gallery ---------- */
+.file-input { padding: 8px 10px; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.gallery-admin { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.gl-card { border: 1px solid #EAEEF5; border-radius: 11px; overflow: hidden; background: var(--white); }
+.gl-card img { width: 100%; height: 120px; object-fit: cover; display: block; background: var(--bg); }
+.gl-card .gl-cap { padding: 8px 10px 4px; font-size: 12.5px; font-weight: 700; color: var(--navy); }
+.gl-card .gl-actions { padding: 4px 10px 10px; }
+.gl-card .gl-actions .btn-xs { width: 100%; text-align: center; }
+
 /* ---------- settings ---------- */
 .settings-wrap { display: flex; flex-direction: column; gap: 16px; max-width: 640px; }
 .pill-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
